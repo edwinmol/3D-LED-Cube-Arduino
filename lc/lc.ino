@@ -29,10 +29,74 @@ byte BAMBit = 0; //0 to 3 -> first bit = Most Significant Bit
 // - the last index is the bit array containing the bits to shift into the shift registers
 byte rgb[4][8][24];
 
+byte zero[9] = {0,0,0,0,0,0,0,0,0};
+
+byte ascii[26][9] = {{0b01110000,0b10001000,0b10001000,0b11111000,0b10001000,0b10001000,0b10001000,0b00000000,5},
+{0b11110000,0b10001000,0b10001000,0b11110000,0b10001000,0b10001000,0b11110000,0b00000000,5},
+{0b01110000,0b10001000,0b10000000,0b10000000,0b10000000,0b10001000,0b01110000,0b00000000,5},
+{0b11110000,0b10001000,0b10001000,0b10001000,0b10001000,0b10001000,0b11110000,0b00000000,5},
+{0b11110000,0b10000000,0b10000000,0b11100000,0b10000000,0b10000000,0b11110000,0b00000000,4},
+{0b11110000,0b10000000,0b10000000,0b11100000,0b10000000,0b10000000,0b10000000,0b00000000,4},
+{0b01110000,0b10001000,0b10000000,0b10110000,0b10001000,0b10001000,0b01110000,0b00000000,5},
+{0b10001000,0b10001000,0b10001000,0b11111000,0b10001000,0b10001000,0b10001000,0b00000000,5},
+{0b11100000,0b01000000,0b01000000,0b01000000,0b01000000,0b01000000,0b11100000,0b00000000,3},
+{0b11100000,0b00100000,0b00100000,0b00100000,0b00100000,0b00100000,0b11000000,0b00000000,3},
+{0b10010000,0b10010000,0b10100000,0b11000000,0b10100000,0b10010000,0b10010000,0b00000000,4},
+{0b10000000,0b10000000,0b10000000,0b10000000,0b10000000,0b10000000,0b11100000,0b00000000,3},
+{0b10001000,0b11011000,0b10101000,0b10001000,0b10001000,0b10001000,0b10001000,0b00000000,5},
+{0b10000100,0b11000100,0b10100100,0b10010100,0b10001100,0b10000100,0b10000100,0b00000000,6},
+{0b01110000,0b10001000,0b10001000,0b10001000,0b10001000,0b10001000,0b01110000,0b00000000,5},
+{0b11110000,0b10001000,0b10001000,0b11110000,0b10000000,0b10000000,0b10000000,0b00000000,5},
+{0b01110000,0b10001000,0b10001000,0b10101000,0b10011000,0b10001000,0b01110100,0b00000000,6},
+{0b11110000,0b10001000,0b10001000,0b11110000,0b10100000,0b10010000,0b10001000,0b00000000,5},
+{0b01110000,0b10001000,0b10000000,0b01110000,0b00001000,0b10001000,0b01110000,0b00000000,5},
+{0b11111000,0b00100000,0b00100000,0b00100000,0b00100000,0b00100000,0b00100000,0b00000000,5},
+{0b10001000,0b10001000,0b10001000,0b10001000,0b10001000,0b10001000,0b01110000,0b00000000,5},
+{0b10001000,0b10001000,0b10001000,0b01010000,0b01010000,0b00100000,0b00100000,0b00000000,5},
+{0b10000010,0b10000010,0b10000010,0b01010100,0b01010100,0b00101000,0b00101000,0b00000000,7},
+{0b10001000,0b10001000,0b01010000,0b00100000,0b01010000,0b10001000,0b10001000,0b00000000,5},
+{0b10001000,0b10001000,0b01010000,0b00100000,0b00100000,0b00100000,0b00100000,0b00000000,5},
+{0b11111000,0b00001000,0b00010000,0b00100000,0b01000000,0b10000000,0b11111000,0b00000000,5}};
+
+int text_buffer[8] = {0,0,0,0,0,0,0,0};
+
+/*
+
+byte A[8] = {0b00111100,0b01000010,0b01000010,0b01000010,0b01111110,0b01000010,0b01000010,0b01000010};
+byte B[8] = {0b01111100,0b01000010,0b01000010,0b01111100,0b01000010,0b01000010,0b01000010,0b01111100};
+byte C[8] = {0b00111100,0b01000010,0b01000000,0b01000000,0b01000000,0b01000000,0b01000010,0b00111100};
+byte D[8] = {0b01111100,0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b01111100};
+byte E[8] = {0b01111110,0b01000000,0b01000000,0b01111100,0b01000000,0b01000000,0b01000000,0b01111110};
+byte F[8] = {0b01111110,0b01000000,0b01000000,0b01111100,0b01000000,0b01000000,0b01000000,0b01000000};
+byte G[8] = {0b00111100,0b01000010,0b01000000,0b01000000,0b01001100,0b01000010,0b01000010,0b00111100};
+byte H[8] = {0b01000010,0b01000010,0b01000010,0b01000010,0b01111110,0b01000010,0b01000010,0b01000010};
+byte I[8] = {0b00111000,0b00010000,0b00010000,0b00010000,0b00010000,0b00010000,0b00010000,0b00111000};
+byte J[8] = {0b01111000,0b00001000,0b00001000,0b00001000,0b00001000,0b00001000,0b00001000,0b01110000};
+byte K[8] = {0b01000100,0b01001000,0b01010000,0b01100000,0b01100000,0b01010000,0b01001000,0b01000100};
+byte L[8] = {0b01000000,0b01000000,0b01000000,0b01000000,0b01000000,0b01000000,0b01000000,0b01111100};
+byte M[8] = {0b01000001,0b01100011,0b01010101,0b01001001,0b01000001,0b01000001,0b01000001,0b01000001};
+byte N[8] = {0b01000001,0b01100001,0b01010001,0b01001001,0b01000101,0b01000011,0b01000001,0b01000001};
+byte O[8] = {0b00111100,0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b00111100};
+byte P[8] = {0b01111100,0b01000010,0b01000010,0b01000010,0b01111100,0b01000000,0b01000000,0b01000000};
+byte Q[8] = {0b00111100,0b01000010,0b01000010,0b01000010,0b01001010,0b01000110,0b01000010,0b00111101};
+byte R[8] = {0b01111100,0b01000010,0b01000010,0b01000010,0b01111100,0b01001000,0b01000100,0b01000010};
+byte S[8] = {0b00111100,0b01000010,0b01000000,0b00111100,0b00000010,0b00000010,0b01000010,0b00111100};
+byte T[8] = {0b01111100,0b00010000,0b00010000,0b00010000,0b00010000,0b00010000,0b00010000,0b00010000};
+byte U[8] = {0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b01000010,0b00111100};
+byte V[8] = {0b01000001,0b01000001,0b00100010,0b00100010,0b00010100,0b00010100,0b00001000,0b00001000};
+byte W[8] = {0b01000001,0b01000001,0b01000001,0b00100010,0b00101010,0b00101010,0b00010100,0b00010100};
+byte X[8] = {0b01000010,0b01000010,0b00100100,0b00011000,0b00011000,0b00100100,0b01000010,0b01000010};
+byte Y[8] = {0b01000001,0b01000001,0b00100010,0b00010100,0b00001000,0b00001000,0b00001000,0b00001000};
+byte Z[8] = {0b01111110,0b00000010,0b00000100,0b00001000,0b00010000,0b00100000,0b01000000,0b01111110};
+
+*/
+
+
+
 //These variables can be used for other things
 unsigned long start;//for a millis timer to cycle through the animations
 
-void setup() {
+void setup() {  
   pinMode(blank_pin, OUTPUT);//Output Enable  
 
   // Disable output
@@ -132,6 +196,76 @@ void writeOutput(byte value,byte mask, byte pin) {
     } 
 }
 
+void printString(const char string[], byte r, byte g, byte b) {
+  clear(); 
+  int _cursor = 0;
+  int _column = 0;
+  int _length = strlen(string);
+  while (_cursor<_length) {
+    int a = string[_cursor]-65;
+    byte  _charsize = ascii[a][8];
+    shiftAndFill(ascii[a],_column,r,g,b);
+    _column++;
+    // check if we have more columns of the char to show
+    if (_column > _charsize) {
+      _cursor++; //next char      
+    }
+  }
+  //at the end we need to shift in zeros until the last char has been shifted out (15x)
+  for (int i=0;i<15;i++) {    
+    shiftAndFill(zero,0,r,g,b);
+  }
+}
+
+// shift everything to the left and add a new column to the right
+void shiftAndFill(byte letter[], int _column, byte r, byte g, byte b) {
+  
+    // shift all bits
+    for (int x=0;x<8;x++) {
+      text_buffer[x] == text_buffer[x] << 1;
+    }
+    // add new column
+    for (int x=0;x<8;x++) {
+      //if (bitRead(letter[x],_column)==1) {
+        text_buffer[x] == text_buffer[x] | 0x01;
+      //}
+    }
+    // transfer the text_buffer to the LED_CUBE
+    for (int i=0;i<7;i++) {
+      setColumn(i,0,text_buffer,i,r,g,b);
+    }
+    for (int i=0;i<7;i++) {
+      setColumn(7,i,text_buffer,i+7,r,g,b);
+    }
+    delay(100);
+}
+
+void setColumn(int x,int y, int letter[], int index, byte r, byte g, byte b) {
+  for(int i=0; i<8; i++) {
+      if (bitRead(letter[i],index)==1) {
+        LED(x,y,7-i,r,g,b);
+      } else {
+        LED(x,y,7-i,0,0,0);
+      }
+  }
+}
+
+void print(byte letter[], byte r, byte g, byte b) {
+  for(int x=0; x<8; x++) {
+    for(int i=0; i<8; i++) {
+      for (int p=0; p<8; p++) {
+        if (bitRead(letter[i],p)==1) {
+          LED(x,7-p,7-i,r,g,b);
+        } else {
+          LED(x,7-p,7-i,0,0,0);
+        }
+      }
+    }
+    delay(60);
+    fillrow(x,0,0,0);
+  }
+}
+
 //function to control a LED
 void LED (int row, int column, int l, byte r, byte g, byte b) {
   //write to the data structure, the driveLayer interrupt will push it to the HW
@@ -160,6 +294,45 @@ void writeRGBValues(byte l, byte BAM) {
 
 void loop() {
 
+
+  //const char *hello = "hello";
+  //printString(hello,15,15,15);
+ 
+  sinwaveTwo();
+  for (int i=0;i<26;i++) {
+    print(ascii[i],random(8),random(8),random(8));
+  }
+
+ /*
+  print(A,random(8),random(8),random(8));
+  print(B,random(8),random(8),random(8));
+  print(C,random(8),random(8),random(8));
+  print(D,random(8),random(8),random(8));
+  print(E,random(8),random(8),random(8));
+  print(F,random(8),random(8),random(8));
+  print(G,random(8),random(8),random(8));
+  print(H,random(8),random(8),random(8));
+  print(I,random(8),random(8),random(8));
+  print(J,random(8),random(8),random(8));
+  print(K,random(8),random(8),random(8));
+  print(L,random(8),random(8),random(8));
+  print(M,random(8),random(8),random(8));
+  print(N,random(8),random(8),random(8));
+  print(O,random(8),random(8),random(8));
+  print(P,random(8),random(8),random(8));
+  print(Q,random(8),random(8),random(8));
+  print(R,random(8),random(8),random(8));
+  print(S,random(8),random(8),random(8));
+  print(T,random(8),random(8),random(8));
+  print(U,random(8),random(8),random(8));
+  print(V,random(8),random(8),random(8));
+  print(W,random(8),random(8),random(8));
+  print(X,random(8),random(8),random(8));
+  print(Y,random(8),random(8),random(8));
+  print(Z,random(8),random(8),random(8));
+  */
+  clear();
+  /*
   RGBGlow();
   clear();
   rain();
@@ -174,9 +347,14 @@ void loop() {
   clear();
   doRandom();
   clear();
+  */
   
 }
 
+void cube() {
+  //grow a cube from inside out and vice versa
+  
+}
 
 void rain() {
   //create some random drops in a plane
